@@ -54,6 +54,7 @@ class Sparest_model extends Model {
 		// Call the Model constructor
 		parent::Model();
 		$this->load->database();
+		//TODO:Move this so it can be done globally?
 	}
 
 	//*******************
@@ -94,9 +95,16 @@ class Sparest_model extends Model {
 		//iterate throught the keys array and set the values to null in the resulting array;
 		$repArray = array();
 		foreach ($this->keys as $key) {
-	 		$repArray[$key] = '';
+	 		$repArray[$key] = NULL;
 		}
 		return $repArray;
+	}
+
+	//Gets an Object version of RepArray
+	function getRepObject()
+	{
+		$repArray = $this->getRepArray();
+		return (object)$repArray;
 	}
 
 	//*******************
@@ -165,7 +173,7 @@ class Sparest_model extends Model {
 	//Performs an INSERT or UPDATE statement with a representational array, insert uses no primary key
 	//   Returns Boolean on whether or not the Update Succeeded
  	//Wire this to PUT method in the REST Controller
-	function createupdate($repArray, $byPrimaryKey)
+	function createupdate($repArray, $byPrimaryKey=NULL)
 	{
 		//Drop the primary key in the $repArray so we don't have to worry about it screwing with the update/insert
 		unset($repArray[$this->primaryKey]);				
