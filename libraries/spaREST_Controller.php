@@ -1,5 +1,4 @@
-<?php
-
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 //*****************************************************************
 // 
 //  sparest - A Simple Parsing Algorithm for REST 
@@ -40,15 +39,13 @@
 // THE SOFTWARE.
 //*****************************************************************
 
-
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
 require(APPPATH.'/libraries/REST_Controller.php');  //Include the base REST_Controller so I don't have to rewrite the whole implementation
 
 class spaREST_Controller extends REST_Controller {
-	public $autoDetect='';
-	public $excludeAliases='';
-	public $includeAliases='';
-	public $sparestMethod='sparest';
+	protected $autoDetect=NULL;
+	protected $excludeAliases=NULL;
+	protected $includeAliases=NULL;
+	protected $sparestMethod='sparest';
 
 	// Constructor function
 	public function __construct()
@@ -58,10 +55,10 @@ class spaREST_Controller extends REST_Controller {
 		// Config this sucker!
 		$this->load->config('sparest');
 		//TODO:implement autodetect, include/exclude aliases
-		$this->$autoDetect = $this->config->item('CodeGenAutodetect');
-		$this->$excludeAliases = $this->config->item('CodeGenExclude');
-		$this->$includeAliases = $this->config->item('CodeGenInclude');
-		$this->$sparestMethod='sparest';
+		$this->autoDetect = $this->config->item('CodeGenAutodetect');
+		$this->excludeAliases = $this->config->item('CodeGenExclude');
+		$this->includeAliases = $this->config->item('CodeGenInclude');
+		$this->sparestMethod='sparest';
 	}
 
 	//Remap
@@ -71,7 +68,7 @@ class spaREST_Controller extends REST_Controller {
 		// If the controller method doesn't exist.... assume it's a spaREST call. so route it back to the controller
 		$controller_method = $object_called . '_' . $this->request->method;
 		if (!method_exists($this, $controller_method)){
-			$controller_method = $sparestMethod.'_'.$this->request->method;
+			$controller_method = $this->sparestMethod.'_'.$this->request->method;
 			//but if the sparest method doesn't exist... kick a 404 (I like the 808 kick better. Just sayin')			
 			if (method_exists($this, $controller_method)){
 				$this->$controller_method();
@@ -86,5 +83,9 @@ class spaREST_Controller extends REST_Controller {
 			parent::_remap($object_called);
 		}
 		
+	}
+
+	//TODO:Finish this function
+	public function parseSparestUri($uri){
 	}
 }
